@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wheel of Commitment</title>
+  <style>
+    body {
+      background: #cfcfcf;
+      font-family: "Courier New", monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .window {
+      width: 460px;
+      background: #e5e5e5;
+      border: 2px solid #000;
+      box-shadow: 6px 6px 0 #777;
+    }
+
+    .title-bar {
+      background: #000080;
+      color: white;
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+
+    .content {
+      padding: 20px;
+      font-size: 14px;
+      color: #000;
+    }
+
+    button {
+      font-family: inherit;
+      font-size: 14px;
+      padding: 8px 12px;
+      border: 2px solid #000;
+      background: #dcdcdc;
+      cursor: pointer;
+    }
+
+    button:active {
+      transform: translate(1px, 1px);
+    }
+
+    .log {
+      margin-top: 15px;
+      line-height: 1.6;
+    }
+
+    .final {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .corrupt {
+      color: darkred;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="window">
+    <div class="title-bar">SYSTEM FILE — DO NOT CLOSE</div>
+    <div class="content" id="content">
+      <p>This program will assign you a Modern Family episode.</p>
+      <p>By proceeding, you agree to commit.</p>
+
+      <button id="startBtn" onclick="startWheel()">EXECUTE WHEEL OF COMMITMENT</button>
+
+      <div class="log" id="log"></div>
+      <div class="final" id="final"></div>
+    </div>
+  </div>
+
+<script>
+/* ---------------- EPISODE DATA ---------------- */
+
+const episodes = {
+  1: [
+    "Pilot","The Bicycle Thief","Come Fly with Me","The Incident","Coal Digger",
+    "Run for Your Wife","En Garde","Great Expectations","Fizbo","Undeck the Halls",
+    "Up All Night","Not in My House","Fifteen Percent","Moon Landing","My Funky Valentine",
+    "Fears","Truth Be Told","Starry Night","Game Changer","Benched","Travels with Scout",
+    "Airport 2010","Hawaii","Family Portrait"
+  ],
+  2: [
+    "The Old Wagon","The Kiss","Earthquake","Strangers on a Treadmill","Unplugged",
+    "Halloween","Chirp","Manny Get Your Gun","Mother Tucker","Dance Dance Revelation",
+    "Slow Down Your Neighbors","Our Children, Ourselves","Caught in the Act","Bixby's Back",
+    "Princess Party","Regrets Only","Two Monkeys and a Panda","Boys' Night","The Musical Man",
+    "Someone to Watch Over Lily","Mother's Day","Good Cop Bad Dog","See You Next Fall","The One That Got Away"
+  ],
+  3: [
+    "Dude Ranch","When Good Kids Go Bad","Phil on Wire","Door to Door","Hit and Run",
+    "Go Bullfrogs!","Treehouse","After the Fire","Punkin Chunkin","Express Christmas",
+    "Lifetime Supply","Egg Drop","Little Bo Bleep","Me? Jealous?","Aunt Mommy",
+    "Virgin Territory","Leap Day","Send Out the Clowns","Election Day","The Last Walt",
+    "Planes, Trains and Cars","Disneyland","Tableau Vivant","Baby on Board"
+  ],
+  4: [
+    "Bringing Up Baby","Schooled","When the Kids Get Away","The Butler's Escape","Open House of Horrors",
+    "Yard Sale","Arrested","Mistery Date","When a Tree Falls","Diamond in the Rough",
+    "New Year's Eve","Party Crasher","Fulgencio","A Slight at the Opera","Heart Broken",
+    "Bad Hair Day","Best Men","The Wow Factor","The Future Dunphys","Flip Flop",
+    "Career Day","My Hero","Games People Play","Goodnight Gracie"
+  ],
+  5: [
+    "Suddenly, Last Summer","First Days","Larry's Wife","Farm Strong","The Late Show",
+    "Halloween 4: The Revenge of Rod Skyhook","A Fair to Remember","Closet? You'll Love It!",
+    "The Big Game","The Old Man & the Tree","And One to Grow On","Under Pressure",
+    "Three Dinners","iSpy","The Feud","Spring-a-Ding-Fling","Other People's Children",
+    "Las Vegas","A Hard Jay's Night","Australia","Sleeper","Message Received","The Wedding, Part 1","The Wedding, Part 2"
+  ]
+};
+
+/* ------------- SYSTEM CORRUPTION CHECK ------------- */
+
+if (localStorage.getItem("mf_committed")) {
+  document.getElementById("content").innerHTML = `
+    <p class="corrupt">⚠ SYSTEM ERROR ⚠</p>
+    <p class="corrupt">FILE CORRUPTED DUE TO UNAUTHORIZED REFRESH.</p>
+    <p>You were assigned an episode.</p>
+    <p>You chose to forget it.</p>
+    <p>This program will not run again.</p>
+  `;
+}
+
+/* ---------------- MAIN LOGIC ---------------- */
+
+function startWheel() {
+  const btn = document.getElementById("startBtn");
+  const log = document.getElementById("log");
+  const final = document.getElementById("final");
+
+  btn.style.display = "none";
+  log.innerHTML = "";
+  localStorage.setItem("mf_committed", "true");
+
+  const messages = [
+    "Initializing commitment protocol...",
+    "Accessing archived media...",
+    "Locating episode file...",
+    "Recovering title metadata...",
+    "Finalizing assignment..."
+  ];
+
+  let i = 0;
+
+  const interval = setInterval(() => {
+    log.innerHTML += messages[i] + "<br>";
+    i++;
+
+    if (i === messages.length) {
+      clearInterval(interval);
+      setTimeout(showEpisode, 800);
+    }
+  }, 650);
+
+  function showEpisode() {
+    const seasonNumbers = Object.keys(episodes);
+    const season = seasonNumbers[Math.floor(Math.random() * seasonNumbers.length)];
+    const titles = episodes[season];
+    const episodeIndex = Math.floor(Math.random() * titles.length);
+    const title = titles[episodeIndex];
+
+    final.innerHTML = `
+      ASSIGNED EPISODE:<br><br>
+      Season ${season}, Episode ${episodeIndex + 1}<br>
+      "${title}"<br><br>
+      This decision is final.<br>
+      Refreshing is cowardice.
+    `;
+  }
+}
+</script>
+
+</body>
+</html>
